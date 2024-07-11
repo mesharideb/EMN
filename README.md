@@ -36,3 +36,6 @@ Current maintainers:
 * Mohammed Bamlhes (bamlhes) - https://www.drupal.org/u/bamlhes
 
 
+-- Project page --
+
+https://www.drupal.org/project/comingsoon_mode
