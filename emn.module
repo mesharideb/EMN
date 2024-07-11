@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * @file
+ * Contains emn.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\block\Entity\Block;
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function emn_entity_type_alter(array &$entity_types) {
+  /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
+  $entity_types['node_type']->setListBuilderClass('Drupal\emn\ContentListBuilder');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function emn_form_block_admin_display_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $last_tow_column = array_slice($form['blocks']['#header'], -2, 2, TRUE);
+  $machine_name_column = array_slice($form['blocks']['#header'], 0, -2, TRUE);
+  $machine_name_column[] = t('Machine name');
+  $form['blocks']['#header'] = [];
+  $form['blocks']['#header'] = array_merge($machine_name_column, $last_tow_column);
+  foreach ($form['blocks'] as $bid => $block) {
+    if ($bid[0] != '#' && FALSE === strpos($bid, '-')) {
+      $entity = Block::load($bid);
+      $machine_name = $entity->getPlugin()->getPluginDefinition()['id'];
+      $array = $form['blocks'][$bid];
+      $form['blocks'][$bid] = array_slice($array, 0, 4, TRUE) +
+        ['machine_name' => ['#markup' => $machine_name]] +
+        array_slice($array, 2, count($array) - 1, TRUE);
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function emn_form_taxonomy_overview_vocabularies_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $machine_name_column = array_slice($form['vocabularies']['#header'], 0, -2, TRUE);
+  $machine_name_column['machine_name'] = t('Machine name');
+  $form['vocabularies']['#header'] = array_merge($machine_name_column, $form['vocabularies']['#header']);
+  foreach ($form['vocabularies'] as $vid => $vocab) {
+    if ($vid[0] != '#' && FALSE === strpos($vid, '-')) {
+      $array = $form['vocabularies'][$vid];
+      $form['vocabularies'][$vid] = array_slice($array, 0, 2, TRUE) +
+        ['machine_name' => ['#markup' => $vid]] +
+        array_slice($array, 2, count($array) - 1, TRUE);
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function emn_form_user_admin_roles_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $machine_name_column = array_slice($form['entities']['#header'], 0, -2, TRUE);
+  $machine_name_column['machine_name'] = t('Machine name');
+  $form['entities']['#header'] = array_merge($machine_name_column, $form['entities']['#header']);
+  foreach ($form['entities'] as $vid => $vocab) {
+    if ($vid[0] != '#' && FALSE === strpos($vid, '-')) {
+      $array = $form['entities'][$vid];
+      $form['entities'][$vid] = array_slice($array, 0, 2, TRUE) +
+        ['machine_name' => ['#markup' => $vid]] +
+        array_slice($array, 2, count($array) - 1, TRUE);
+    }
+  }
+}

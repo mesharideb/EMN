@@ -1,0 +1,10 @@
+name: 'Entity Machine Name (emn)'
+type: module
+description: 'Entity machine name'
+core_version_requirement: ^8.8.0 || ^9 || ^10
+package: 'Custom'
+
+# Information added by Drupal.org packaging script on 2022-11-24
+version: '1.0.0'
+project: 'emn'
+datestamp: 1669298344
